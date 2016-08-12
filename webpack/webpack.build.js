@@ -6,6 +6,9 @@ var CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
     entry: {
         app: './src/index.ts',
+        vendor: [
+
+        ]
     },
     output: {
         filename: './bundle.js',

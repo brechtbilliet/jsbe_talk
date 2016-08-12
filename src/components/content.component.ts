@@ -1,13 +1,16 @@
-import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from "@angular/core";
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy, OnDestroy, OnInit} from "@angular/core";
 import {Tweet} from "../entities/tweet.entity";
 import {StarComponent} from "./star.component";
+import {Subscription} from "rxjs/Rx";
+import {FormControl, REACTIVE_FORM_DIRECTIVES} from "@angular/forms";
 @Component({
     selector: "content",
-    directives: [StarComponent],
+    directives: [StarComponent, REACTIVE_FORM_DIRECTIVES],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <h2>Feed</h2>
-        <p>These are the most recent tweets</p>
+        <p>These are the most recent tweets:</p>
+        <input type="text" class="form-control" [formControl]="searchCtrl" (change)="onSearch($event)" >
         <div class="nf-tweets">
             <div class="row nf-tweet" *ngFor="let tweet of tweets">
                 <div class="col-sm-8">
@@ -30,6 +33,9 @@ export class ContentComponent {
     @Input() tweets: Array<Tweet>;
     @Output() toggleStarTweet = new EventEmitter<number>();
     @Output() removeTweet = new EventEmitter<number>();
+    @Output() search = new EventEmitter<string>();
+
+    searchCtrl = new FormControl();
 
     onToggleStar(tweet: Tweet): void {
         this.toggleStarTweet.emit(tweet.id);
@@ -37,5 +43,9 @@ export class ContentComponent {
 
     onRemoveTweet(tweet: Tweet): void {
         this.removeTweet.emit(tweet.id);
+    }
+
+    onSearch(term: string): void {
+        console.log(term);
     }
 }

@@ -29,6 +29,7 @@ import {TopbarComponent} from "../components/topbar.component";
                     (toggleCollapse)="onToggleCollapseTopbar()">
             </topbar>
             <content [tweets]="tweets"
+                     (search)="onSearch($event)"
                      (removeTweet)="onRemoveTweet($event)"
                      (toggleStarTweet)="onStarTweet($event)">
             </content>
@@ -51,11 +52,6 @@ export class ApplicationContainer implements OnDestroy {
             this.tweets = state.tweets;
             this.starredTweets = state.tweets.filter(tweet => tweet.starred);
         });
-        let tweets: Array<Tweet> = [];
-        for (let i = 0; i < 10; i++) {
-            tweets.push(new Tweet(Number(_.uniqueId()), "@brechtbilliet", `Just a dummy tweet ${i}`, false));
-        }
-        this.store.dispatch({type: SET_TWEETS, payload: {tweets}});
     }
 
     onAddTweet(content: string): void {
@@ -77,6 +73,10 @@ export class ApplicationContainer implements OnDestroy {
 
     onToggleCollapseSidebar(): void {
         this.store.dispatch({type: TOGGLE_SIDEBAR});
+    }
+
+    onSearch(term: string): void {
+
     }
 
     ngOnDestroy(): void {
