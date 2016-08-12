@@ -76,7 +76,7 @@ export class ApplicationContainer implements OnDestroy {
     }
 
     onSearch(term: string): void {
-
+        console.log(term);
     }
 
     ngOnDestroy(): void {
