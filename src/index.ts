@@ -10,6 +10,9 @@ import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule, FORM_PROVIDERS, REACTIVE_FORM_PROVIDERS} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 
+// todo:
+// Use redux in this branch insted of ngrx
+// add the monitor and stuff later
 @NgModule({
     imports: [BrowserModule, ReactiveFormsModule, FormsModule],
     declarations: [ApplicationContainer],
