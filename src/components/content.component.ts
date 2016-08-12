@@ -10,7 +10,7 @@ import {FormControl, REACTIVE_FORM_DIRECTIVES} from "@angular/forms";
     template: `
         <h2>Feed</h2>
         <p>These are the most recent tweets:</p>
-        <input type="text" class="form-control" [formControl]="searchCtrl" (change)="onSearch($event)" >
+        <input type="text" class="form-control" [formControl]="searchCtrl" >
         <div class="nf-tweets">
             <div class="row nf-tweet" *ngFor="let tweet of tweets">
                 <div class="col-sm-8">
@@ -29,13 +29,23 @@ import {FormControl, REACTIVE_FORM_DIRECTIVES} from "@angular/forms";
         </div>
 `
 })
-export class ContentComponent {
+export class ContentComponent implements OnDestroy, OnInit {
     @Input() tweets: Array<Tweet>;
     @Output() toggleStarTweet = new EventEmitter<number>();
     @Output() removeTweet = new EventEmitter<number>();
     @Output() search = new EventEmitter<string>();
 
     searchCtrl = new FormControl();
+
+    private subscriptions: Array<Subscription> = [];
+
+    ngOnInit(): void {
+        this.subscriptions.push(this.searchCtrl.valueChanges.subscribe((term: string) => this.search.emit(term)));
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+    }
 
     onToggleStar(tweet: Tweet): void {
         this.toggleStarTweet.emit(tweet.id);

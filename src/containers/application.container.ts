@@ -1,11 +1,11 @@
-import {Component, OnDestroy} from "@angular/core";
+import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {StoreLogMonitorComponent} from "@ngrx/store-log-monitor";
 import {ApplicationState} from "../applicationState";
-import {SET_TWEETS, ADD_TWEET, REMOVE_TWEET, TOGGLE_STAR_TWEET, TOGGLE_TOPBAR, TOGGLE_SIDEBAR} from "../actions";
+import {ADD_TWEET, REMOVE_TWEET, TOGGLE_STAR_TWEET, TOGGLE_TOPBAR, TOGGLE_SIDEBAR} from "../actions";
 import {Tweet} from "../entities/tweet.entity";
 import {SidebarComponent} from "../components/sidebar.component";
-import {Subscription} from "rxjs/Rx";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import * as _ from "lodash";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
@@ -17,19 +17,19 @@ import {TopbarComponent} from "../components/topbar.component";
     selector: "application",
     directives: [StoreLogMonitorComponent, SidebarComponent, TopbarComponent, ContentComponent],
     template: `        
-        <sidebar [class.sidebar-collapsed]="sidebarCollapsed"
-                 [isCollapsed]="sidebarCollapsed"
-                 [starredTweets]="starredTweets"
+        <sidebar [class.sidebar-collapsed]="sidebarCollapsed$|async"
+                 [isCollapsed]="sidebarCollapsed$|async"
+                 [starredTweets]="starredTweets$|async"
                  (toggleCollapse)="onToggleCollapseSidebar()">
         </sidebar>
         <main>
-            <topbar [class.topbar-collapsed]="topbarCollapsed"
-                    [isCollapsed]="topbarCollapsed"   
+            <topbar [class.topbar-collapsed]="topbarCollapsed$|async"
+                    [isCollapsed]="topbarCollapsed$|async"   
                     (addTweet)="onAddTweet($event)"
                     (toggleCollapse)="onToggleCollapseTopbar()">
             </topbar>
-            <content [tweets]="tweets"
-                     (search)="onSearch($event)"
+            <content [tweets]="foundTweets$|async"
+                     (search)="search$.next($event)"
                      (removeTweet)="onRemoveTweet($event)"
                      (toggleStarTweet)="onStarTweet($event)">
             </content>
@@ -37,21 +37,18 @@ import {TopbarComponent} from "../components/topbar.component";
         <ngrx-store-log-monitor toggleCommand="ctrl-t" positionCommand="ctrl-m"></ngrx-store-log-monitor>
             `
 })
-export class ApplicationContainer implements OnDestroy {
-    sidebarCollapsed = false;
-    topbarCollapsed = false;
-    starredTweets: Array<Tweet> = [];
-    tweets: Array<Tweet> = [];
-
-    private storeSubscription: Subscription;
+export class ApplicationContainer {
+    sidebarCollapsed$ = this.store.select(state => state.sidebarCollapsed);
+    topbarCollapsed$ = this.store.select(state => state.topbarCollapsed);
+    tweets$ = this.store.select(state => state.tweets);
+    starredTweets$ = this.tweets$.map(tweets => tweets.filter(tweet => tweet.starred));
+    search$ = new BehaviorSubject("");
+    foundTweets$ = Observable.combineLatest(this.tweets$, this.search$,
+        (tweets: Array<Tweet>, search: string) => {
+            return tweets.filter(tweet => tweet.content.toLowerCase().indexOf(search.toLowerCase()) > -1);
+        });
 
     constructor(private store: Store<ApplicationState>) {
-        this.storeSubscription = this.store.subscribe((state: ApplicationState) => {
-            this.sidebarCollapsed = state.sidebarCollapsed;
-            this.topbarCollapsed = state.topbarCollapsed;
-            this.tweets = state.tweets;
-            this.starredTweets = state.tweets.filter(tweet => tweet.starred);
-        });
     }
 
     onAddTweet(content: string): void {
@@ -73,13 +70,5 @@ export class ApplicationContainer implements OnDestroy {
 
     onToggleCollapseSidebar(): void {
         this.store.dispatch({type: TOGGLE_SIDEBAR});
-    }
-
-    onSearch(term: string): void {
-
-    }
-
-    ngOnDestroy(): void {
-        this.storeSubscription.unsubscribe();
     }
 }
