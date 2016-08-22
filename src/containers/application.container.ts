@@ -2,7 +2,7 @@ import {Component, OnDestroy} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {StoreLogMonitorComponent} from "@ngrx/store-log-monitor";
 import {ApplicationState} from "../applicationState";
-import {SET_TWEETS, ADD_TWEET, REMOVE_TWEET, TOGGLE_STAR_TWEET, TOGGLE_TOPBAR, TOGGLE_SIDEBAR} from "../actions";
+import {ADD_TWEET, REMOVE_TWEET, TOGGLE_STAR_TWEET, TOGGLE_TOPBAR, TOGGLE_SIDEBAR} from "../actions";
 import {Tweet} from "../entities/tweet.entity";
 import {SidebarComponent} from "../components/sidebar.component";
 import {Subscription} from "rxjs/Rx";
@@ -34,7 +34,6 @@ import {TopbarComponent} from "../components/topbar.component";
                      (toggleStarTweet)="onStarTweet($event)">
             </content>
         </main>
-        <ngrx-store-log-monitor toggleCommand="ctrl-t" positionCommand="ctrl-m"></ngrx-store-log-monitor>
             `
 })
 export class ApplicationContainer implements OnDestroy {
