@@ -77,10 +77,14 @@ export class ApplicationContainer implements OnDestroy {
     }
 
     onSearch(term: string): void {
-        this.filteredTweets = this.tweets.filter(tweet => tweet.content.toLowerCase().indexOf(term.toLowerCase()) > -1);
+        this.filteredTweets = this.filterTweets(this.tweets, term);
     }
 
     ngOnDestroy(): void {
         this.storeSubscription.unsubscribe();
+    }
+
+    private filterTweets(tweets: Array<Tweet>, term: string): Array<Tweet> {
+        return tweets.filter(tweet => tweet.content.toLowerCase().indexOf(term.toLowerCase()) > -1);
     }
 }
