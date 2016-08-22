@@ -12,7 +12,7 @@ import {FORM_DIRECTIVES} from "@angular/common";
             <button [disabled]="tweetContent === ''" (click)="onAddTweet()"
                 class="btn btn-primary btn-lg"><i class="fa fa-envelope"></i>&nbsp;Post
             </button>
-        </div>
+        </div> 
         <i (click)="onToggle()" class="fa nf-collapse nf-collapse-center"
             [class.fa-chevron-up]="!isCollapsed" [class.fa-chevron-down]="isCollapsed"></i>
 `

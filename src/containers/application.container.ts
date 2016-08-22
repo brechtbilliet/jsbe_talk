@@ -1,11 +1,7 @@
-import {Component, OnDestroy} from "@angular/core";
-import {Store} from "@ngrx/store";
+import {Component} from "@angular/core";
 import {StoreLogMonitorComponent} from "@ngrx/store-log-monitor";
-import {ApplicationState} from "../applicationState";
-import {ADD_TWEET, REMOVE_TWEET, TOGGLE_STAR_TWEET, TOGGLE_TOPBAR, TOGGLE_SIDEBAR} from "../actions";
 import {Tweet} from "../entities/tweet.entity";
 import {SidebarComponent} from "../components/sidebar.component";
-import {Subscription} from "rxjs/Rx";
 import * as _ from "lodash";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
@@ -36,55 +32,54 @@ import {TopbarComponent} from "../components/topbar.component";
         </main>
             `
 })
-export class ApplicationContainer implements OnDestroy {
+export class ApplicationContainer {
     sidebarCollapsed = false;
     topbarCollapsed = false;
     starredTweets: Array<Tweet> = [];
     tweets: Array<Tweet> = [];
     filteredTweets: Array<Tweet> = [];
 
-    private storeSubscription: Subscription;
-
-    constructor(private store: Store<ApplicationState>) {
-        this.storeSubscription = this.store.subscribe((state: ApplicationState) => {
-            this.sidebarCollapsed = state.sidebarCollapsed;
-            this.topbarCollapsed = state.topbarCollapsed;
-            this.tweets = state.tweets;
+    constructor() {
+        for (let i = 0; i < 10; i++) {
+            this.tweets.push(new Tweet(Number(_.uniqueId()), "@brechtbilliet", `Just a dummy tweet ${i}`, false));
             this.onSearch("");
-            this.starredTweets = state.tweets.filter(tweet => tweet.starred);
-        });
+        }
+        this.calculateStarredTweets();
     }
 
     onAddTweet(content: string): void {
         let tweet = new Tweet(Number(_.uniqueId()), "@brechtbilliet", content, false);
-        this.store.dispatch({type: ADD_TWEET, payload: {tweet}});
+        this.tweets.push(tweet);
+        this.calculateStarredTweets();
     }
 
     onRemoveTweet(id: number): void {
-        this.store.dispatch({type: REMOVE_TWEET, payload: {id}});
+        this.tweets = this.tweets.filter(tweet => tweet.id !== id);
+        this.calculateStarredTweets();
     }
 
     onStarTweet(id: number): void {
-        this.store.dispatch({type: TOGGLE_STAR_TWEET, payload: {id}});
+        this.tweets = this.tweets.map(tweet => tweet.id === id ? Object.assign(tweet, {starred: !tweet.starred}) : tweet);
+        this.calculateStarredTweets();
     }
 
     onToggleCollapseTopbar(): void {
-        this.store.dispatch({type: TOGGLE_TOPBAR});
+        this.sidebarCollapsed = !this.sidebarCollapsed;
     }
 
     onToggleCollapseSidebar(): void {
-        this.store.dispatch({type: TOGGLE_SIDEBAR});
+        this.topbarCollapsed = !this.topbarCollapsed;
     }
 
     onSearch(term: string): void {
         this.filteredTweets = this.filterTweets(this.tweets, term);
     }
 
-    ngOnDestroy(): void {
-        this.storeSubscription.unsubscribe();
-    }
-
     private filterTweets(tweets: Array<Tweet>, term: string): Array<Tweet> {
         return tweets.filter(tweet => tweet.content.toLowerCase().indexOf(term.toLowerCase()) > -1);
+    }
+
+    private calculateStarredTweets(): void {
+        this.starredTweets = this.tweets.filter(tweet => tweet.starred);
     }
 }
