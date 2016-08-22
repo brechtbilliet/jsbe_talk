@@ -43,10 +43,7 @@ export class ApplicationContainer {
     tweets$ = this.store.select(state => state.tweets);
     starredTweets$ = this.tweets$.map(tweets => tweets.filter(tweet => tweet.starred));
     search$ = new BehaviorSubject("");
-    foundTweets$ = Observable.combineLatest(this.tweets$, this.search$,
-        (tweets: Array<Tweet>, search: string) => {
-            return tweets.filter(tweet => tweet.content.toLowerCase().indexOf(search.toLowerCase()) > -1);
-        });
+    foundTweets$ = Observable.combineLatest(this.tweets$, this.search$, (tweets, term) => this.filterTweets(tweets, term));
 
     constructor(private store: Store<ApplicationState>) {
     }
@@ -70,5 +67,9 @@ export class ApplicationContainer {
 
     onToggleCollapseSidebar(): void {
         this.store.dispatch({type: TOGGLE_SIDEBAR});
+    }
+
+    private filterTweets(tweets: Array<Tweet>, term: string): Array<Tweet> {
+        return tweets.filter(tweet => tweet.content.toLowerCase().indexOf(term.toLowerCase()) > -1);
     }
 }
