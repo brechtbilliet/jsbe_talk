@@ -1,24 +1,18 @@
-import {provideStore} from "@ngrx/store";
 import {rootReducer} from "./reducers";
-import {bootstrap, platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {instrumentStore} from "@ngrx/store-devtools";
 import {useLogMonitor} from "@ngrx/store-log-monitor";
 import {ApplicationContainer} from "./containers/application.container";
-import {ApplicationState} from "./applicationState";
-import {hotModuleReplacement} from "./hmr";
 import {NgModule} from "@angular/core";
-import {FormsModule, ReactiveFormsModule, FORM_PROVIDERS, REACTIVE_FORM_PROVIDERS} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
+import {hotModuleReplacement, provideHotStore} from "./hot-store";
 
-// todo:
-// Use redux in this branch insted of ngrx
-// add the monitor and stuff later
 @NgModule({
-    imports: [BrowserModule, ReactiveFormsModule, FormsModule],
+    imports: [BrowserModule, ReactiveFormsModule, FormsModule, provideHotStore(rootReducer)],
     declarations: [ApplicationContainer],
     bootstrap: [ApplicationContainer],
     providers: [
-        provideStore(rootReducer),
         instrumentStore({
             monitor: useLogMonitor({
                 visible: false,
@@ -30,21 +24,12 @@ import {BrowserModule} from "@angular/platform-browser";
 export class AppModule {
 }
 
-function main(hmrState?: ApplicationState): any {
-    return bootstrap(ApplicationContainer, [
-        provideStore(rootReducer, hmrState),
-        FORM_PROVIDERS,
-        REACTIVE_FORM_PROVIDERS,
-        instrumentStore({
-            monitor: useLogMonitor({
-                visible: false,
-                position: "right"
-            })
-        })
-    ]);
+function main(): any {
+    return platformBrowserDynamic().bootstrapModule(AppModule);
 }
-if (process.env.ENV !== "production") {
+
+if ((<any>module).hot) {
     hotModuleReplacement(main, module);
 } else {
-    platformBrowserDynamic().bootstrapModule(AppModule);
+    document.addEventListener("DOMContentLoaded", () => main);
 }

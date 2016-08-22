@@ -10,7 +10,7 @@ import {Tweet} from "../entities/tweet.entity";
                    [class.fa-chevron-left]="!isCollapsed"
                    [class.fa-chevron-right]="isCollapsed"></i>
                 <div class="collapsed-content">
-                    <h2>Starred tweets :</h2>
+                    <h2>Starred tweets:</h2>
                     <p>Here we have an overview of our starred tweets</p>
                     <div *ngFor="let tweet of starredTweets">
                         {{tweet.userName}} has tweeted {{tweet.content}}
