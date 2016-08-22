@@ -28,7 +28,7 @@ import {TopbarComponent} from "../components/topbar.component";
                     (addTweet)="onAddTweet($event)"
                     (toggleCollapse)="onToggleCollapseTopbar()">
             </topbar>
-            <content [tweets]="tweets"
+            <content [tweets]="filteredTweets"
                      (search)="onSearch($event)"
                      (removeTweet)="onRemoveTweet($event)"
                      (toggleStarTweet)="onStarTweet($event)">
@@ -41,6 +41,7 @@ export class ApplicationContainer implements OnDestroy {
     topbarCollapsed = false;
     starredTweets: Array<Tweet> = [];
     tweets: Array<Tweet> = [];
+    filteredTweets: Array<Tweet> = [];
 
     private storeSubscription: Subscription;
 
@@ -49,6 +50,7 @@ export class ApplicationContainer implements OnDestroy {
             this.sidebarCollapsed = state.sidebarCollapsed;
             this.topbarCollapsed = state.topbarCollapsed;
             this.tweets = state.tweets;
+            this.onSearch("");
             this.starredTweets = state.tweets.filter(tweet => tweet.starred);
         });
     }
@@ -75,7 +77,7 @@ export class ApplicationContainer implements OnDestroy {
     }
 
     onSearch(term: string): void {
-        console.log(term);
+        this.filteredTweets = this.tweets.filter(tweet => tweet.content.toLowerCase().indexOf(term.toLowerCase()) > -1);
     }
 
     ngOnDestroy(): void {
