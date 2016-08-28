@@ -51,11 +51,13 @@ export class ApplicationContainer {
         let tweet = new Tweet(Number(_.uniqueId()), "@brechtbilliet", content, false);
         this.tweets.push(tweet);
         this.calculateStarredTweets();
+        this.filteredTweets = this.tweets;
     }
 
     onRemoveTweet(id: number): void {
         this.tweets = this.tweets.filter(tweet => tweet.id !== id);
         this.calculateStarredTweets();
+        this.filteredTweets = this.tweets;
     }
 
     onStarTweet(id: number): void {
@@ -64,11 +66,11 @@ export class ApplicationContainer {
     }
 
     onToggleCollapseTopbar(): void {
-        this.sidebarCollapsed = !this.sidebarCollapsed;
+        this.topbarCollapsed = !this.topbarCollapsed;
     }
 
     onToggleCollapseSidebar(): void {
-        this.topbarCollapsed = !this.topbarCollapsed;
+        this.sidebarCollapsed = !this.sidebarCollapsed;
     }
 
     onSearch(term: string): void {
