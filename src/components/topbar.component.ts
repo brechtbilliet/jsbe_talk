@@ -1,10 +1,8 @@
 import {Component, Output, EventEmitter, Input, ChangeDetectionStrategy} from "@angular/core";
-import {REACTIVE_FORM_DIRECTIVES, FormControl} from "@angular/forms";
-import {FORM_DIRECTIVES} from "@angular/common";
+import {FormControl} from "@angular/forms";
 @Component({
     selector: "topbar",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    directives: [REACTIVE_FORM_DIRECTIVES, FORM_DIRECTIVES],
     template: `
         <div class="collapsed-content" *ngIf="!isCollapsed">
             <h1><i class="fa fa-twitter"></i>&nbsp;Post a new tweet</h1>

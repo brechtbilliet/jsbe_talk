@@ -1,21 +1,16 @@
 import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {StoreLogMonitorComponent} from "@ngrx/store-log-monitor";
 import {ApplicationState} from "../applicationState";
 import {ADD_TWEET, REMOVE_TWEET, TOGGLE_STAR_TWEET, TOGGLE_TOPBAR, TOGGLE_SIDEBAR} from "../actions";
 import {Tweet} from "../entities/tweet.entity";
-import {SidebarComponent} from "../components/sidebar.component";
 import {BehaviorSubject, Observable} from "rxjs/Rx";
 import * as _ from "lodash";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 import "./application.container.scss";
-import {ContentComponent} from "../components/content.component";
-import {TopbarComponent} from "../components/topbar.component";
 
 @Component({
     selector: "application",
-    directives: [StoreLogMonitorComponent, SidebarComponent, TopbarComponent, ContentComponent],
     template: `        
         <sidebar [class.sidebar-collapsed]="sidebarCollapsed$|async"
                  [isCollapsed]="sidebarCollapsed$|async"

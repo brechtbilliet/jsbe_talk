@@ -1,11 +1,9 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy, OnDestroy, OnInit} from "@angular/core";
 import {Tweet} from "../entities/tweet.entity";
-import {StarComponent} from "./star.component";
 import {Subscription} from "rxjs/Rx";
-import {FormControl, REACTIVE_FORM_DIRECTIVES} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 @Component({
     selector: "content",
-    directives: [StarComponent, REACTIVE_FORM_DIRECTIVES],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <h2>Feed</h2>
