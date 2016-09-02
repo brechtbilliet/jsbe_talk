@@ -1,17 +1,12 @@
 import {Component} from "@angular/core";
-import {StoreLogMonitorComponent} from "@ngrx/store-log-monitor";
 import {Tweet} from "../entities/tweet.entity";
-import {SidebarComponent} from "../components/sidebar.component";
 import * as _ from "lodash";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 import "./application.container.scss";
-import {ContentComponent} from "../components/content.component";
-import {TopbarComponent} from "../components/topbar.component";
 
 @Component({
     selector: "application",
-    directives: [StoreLogMonitorComponent, SidebarComponent, TopbarComponent, ContentComponent],
     template: `        
         <sidebar [class.sidebar-collapsed]="sidebarCollapsed"
                  [isCollapsed]="sidebarCollapsed"
@@ -24,7 +19,7 @@ import {TopbarComponent} from "../components/topbar.component";
                     (addTweet)="onAddTweet($event)"
                     (toggleCollapse)="onToggleCollapseTopbar()">
             </topbar>
-            <content [tweets]="filteredTweets"
+      <content [tweets]="filteredTweets"
                      (search)="onSearch($event)"
                      (removeTweet)="onRemoveTweet($event)"
                      (toggleStarTweet)="onStarTweet($event)">
@@ -51,13 +46,13 @@ export class ApplicationContainer {
         let tweet = new Tweet(Number(_.uniqueId()), "@brechtbilliet", content, false);
         this.tweets.push(tweet);
         this.calculateStarredTweets();
-        this.filteredTweets = this.tweets;
+        this.filteredTweets = [...this.tweets];
     }
 
     onRemoveTweet(id: number): void {
         this.tweets = this.tweets.filter(tweet => tweet.id !== id);
         this.calculateStarredTweets();
-        this.filteredTweets = this.tweets;
+        this.filteredTweets = [...this.tweets];
     }
 
     onStarTweet(id: number): void {

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "typings install",
-    "start": "webpack-dev-server --config webpack/webpack.dev.js --inline --progress --hot --open"
+    "start": "webpack-dev-server --config webpack/webpack.dev.js --inline --progress --hot --open",
+    "build": "webpack --config webpack/webpack.build.js -p"
   },
   "author": "",
   "license": "ISC",
@@ -36,16 +37,17 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "@angular/common": "2.0.0-rc.5",
-    "@angular/compiler": "2.0.0-rc.5",
-    "@angular/core": "2.0.0-rc.5",
-    "@angular/forms": "0.3.0",
-    "@angular/platform-browser": "2.0.0-rc.5",
-    "@angular/platform-browser-dynamic": "2.0.0-rc.5",
-    "@ngrx/core": "1.0.1",
-    "@ngrx/store": "2.0.1",
-    "@ngrx/store-devtools": "2.0.0-beta.1",
-    "@ngrx/store-log-monitor": "2.0.0-beta.1",
+    "@angular/common": "2.0.0-rc.6",
+    "@angular/compiler": "2.0.0-rc.6",
+    "@angular/core": "2.0.0-rc.6",
+    "@angular/forms": "2.0.0-rc.6",
+    "@angular/platform-browser": "2.0.0-rc.6",
+    "@angular/platform-browser-dynamic": "2.0.0-rc.6",
+    "@ngrx/core": "1.0.2",
+    "@ngrx/store": "2.1.2",
+    "@ngrx/store-devtools": "3.0.0",
+    "@ngrx/store-log-monitor": "3.0.0",
+    "angular2-hmr": "0.8.1",
     "bootstrap": "3.3.6",
     "core-js": "2.2.2",
     "es7-reflect-metadata": "1.6.0",
